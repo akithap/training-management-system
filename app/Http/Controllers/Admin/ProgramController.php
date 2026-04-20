@@ -1,0 +1,61 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\TrainingProgram;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
+class ProgramController extends Controller
+{
+    public function index()
+    {
+        $programs = TrainingProgram::with('trainer')->latest()->get();
+        $totalPrograms = TrainingProgram::count();
+        $totalTrainees = User::where('role', 'trainee')->count();
+        return view('admin.programs.index', compact('programs', 'totalPrograms', 'totalTrainees'));
+    }
+
+    public function create()
+    {
+        $trainers = User::where('role', 'trainer')->get();
+        $trainees = User::where('role', 'trainee')->get();
+        return view('admin.programs.create', compact('trainers', 'trainees'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'training_area' => 'required|string|max:255',
+            'venue' => 'required|string|max:255',
+            'schedule_datetime' => 'required|date',
+            'trainer_id' => 'required|exists:users,id',
+            'file_upload' => 'nullable|file|mimes:pdf,doc,docx,zip|max:5120',
+            'trainees' => 'nullable|array',
+            'trainees.*' => 'exists:users,id'
+        ]);
+
+        $filePath = null;
+        if ($request->hasFile('file_upload')) {
+            $filePath = $request->file('file_upload')->store('programs', 'public');
+        }
+
+        $program = TrainingProgram::create([
+            'title' => $validated['title'],
+            'training_area' => $validated['training_area'],
+            'venue' => $validated['venue'],
+            'schedule_datetime' => $validated['schedule_datetime'],
+            'trainer_id' => $validated['trainer_id'],
+            'file_path' => $filePath,
+        ]);
+
+        if (!empty($validated['trainees'])) {
+            $program->trainees()->attach($validated['trainees']);
+        }
+
+        return redirect()->route('admin.programs.index')->with('success', 'Training Program created successfully!');
+    }
+}
