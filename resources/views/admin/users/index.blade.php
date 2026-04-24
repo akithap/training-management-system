@@ -5,7 +5,7 @@
                 {{ __('People Directory (Admin)') }}
             </h2>
             <a href="{{ route('admin.users.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-md transition-all">
-                + Add Employee
+                + Add User
             </a>
         </div>
     </x-slot>
