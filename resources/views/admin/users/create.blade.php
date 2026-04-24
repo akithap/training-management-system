@@ -53,8 +53,8 @@
                             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                         </div>
 
-                        <div class="flex items-center justify-end mt-6 border-t pt-4 border-gray-100">
-                            <a href="{{ route('admin.users.index') }}" class="underline text-sm text-gray-600 hover:text-gray-900 mr-4">
+                        <div class="flex items-center justify-end mt-6 border-t pt-4 border-gray-100" style="gap: 1rem;">
+                            <a href="{{ route('admin.users.index') }}" class="underline text-sm text-gray-600 hover:text-gray-900">
                                 Cancel
                             </a>
                             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-md shadow-md transition-all">
