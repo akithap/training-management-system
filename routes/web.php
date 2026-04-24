@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ProgramController as AdminProgramController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Trainer\ScheduleController as TrainerScheduleController;
 use App\Http\Controllers\Trainee\ProgramController as TraineeProgramController;
 
@@ -19,6 +20,7 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('programs', AdminProgramController::class);
+    Route::resource('users', AdminUserController::class)->except(['show']);
 });
 
 Route::middleware(['auth', 'role:trainer'])->prefix('trainer')->name('trainer.')->group(function () {

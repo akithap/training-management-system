@@ -49,10 +49,6 @@
                                 <a href="{{ url('/dashboard') }}" class="hover:text-blue-200 transition-colors duration-200">Dashboard</a>
                             @else
                                 <a href="{{ route('login') }}" class="hover:text-blue-200 transition-colors duration-200">Log in</a>
-
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="hover:text-blue-200 transition-colors duration-200">Register</a>
-                                @endif
                             @endauth
                         </div>
                     @endif
