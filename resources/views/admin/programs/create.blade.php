@@ -71,10 +71,12 @@
                             <x-input-label :value="__('Enroll Trainees')" class="mb-2" />
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-60 overflow-y-auto p-4 border border-gray-300 rounded-md bg-gray-50 shadow-inner">
                                 @forelse($trainees as $trainee)
-                                    <label class="inline-flex items-center p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-indigo-50 cursor-pointer transition">
-                                        <input type="checkbox" name="trainees[]" value="{{ $trainee->id }}" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" {{ (is_array(old('trainees')) && in_array($trainee->id, old('trainees'))) ? 'checked' : '' }}>
-                                        <div class="ml-3">
-                                            <span class="block text-sm font-medium text-gray-900">{{ $trainee->name }}</span>
+                                    <label class="flex items-start gap-3 p-3 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-indigo-50 cursor-pointer transition">
+                                        <div class="flex items-center h-5 mt-1">
+                                            <input type="checkbox" name="trainees[]" value="{{ $trainee->id }}" class="w-5 h-5 rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" {{ (is_array(old('trainees')) && in_array($trainee->id, old('trainees'))) ? 'checked' : '' }}>
+                                        </div>
+                                        <div class="flex-1">
+                                            <span class="block text-sm font-bold text-gray-900">{{ $trainee->name }}</span>
                                             <span class="block text-xs text-gray-500">{{ $trainee->email }}</span>
                                         </div>
                                     </label>
