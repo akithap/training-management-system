@@ -94,11 +94,11 @@
                     {{ __('Feedback & Reviews') }}
                 </x-responsive-nav-link>
             @elseif(Auth::user()->role === 'trainer')
-                <x-responsive-nav-link :href="route('trainer.schedules.index')" :active="request()->requestIs('trainer.schedules.*')">
+                <x-responsive-nav-link :href="route('trainer.schedules.index')" :active="request()->routeIs('trainer.schedules.*')">
                     {{ __('Dashboard') }}
                 </x-responsive-nav-link>
             @elseif(Auth::user()->role === 'trainee')
-                <x-responsive-nav-link :href="route('trainee.programs.index')" :active="request()->requestIs('trainee.programs.*')">
+                <x-responsive-nav-link :href="route('trainee.programs.index')" :active="request()->routeIs('trainee.programs.*')">
                     {{ __('Dashboard') }}
                 </x-responsive-nav-link>
             @endif
