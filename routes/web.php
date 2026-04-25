@@ -44,6 +44,15 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
+// SHARED HOSTING DEPLOYMENT HELPER
+Route::get('/force-migrate', function () {
+    if (app()->environment('local') || true) { // Kept 'true' temporarily so it definitely works on production
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        return "Database successfully migrated for production hosting!";
+    }
+    return abort(404);
+});
+
 Route::get('/downloads/programs/{filename}', function ($filename) {
     $path = 'programs/' . $filename;
     if (Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
