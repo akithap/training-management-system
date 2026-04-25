@@ -15,7 +15,35 @@ class ProgramController extends Controller
         $programs = TrainingProgram::with('trainer')->latest()->get();
         $totalPrograms = TrainingProgram::count();
         $totalTrainees = User::where('role', 'trainee')->count();
-        return view('admin.programs.index', compact('programs', 'totalPrograms', 'totalTrainees'));
+        
+        // 1. Trainer Performance Leaderboard
+        $trainerPerformance = User::where('role', 'trainer')->with(['programsAsTrainer.feedbacks'])->get()->map(function($trainer) {
+            $feedbacks = $trainer->programsAsTrainer->flatMap->feedbacks;
+            $avg = $feedbacks->avg('rating');
+            return [
+                'name' => $trainer->name,
+                'rating' => $avg ? round($avg, 2) : 0
+            ];
+        })->filter(fn($t) => $t['rating'] > 0)->sortByDesc('rating')->values();
+
+        // 3. Program Satisfaction Scores
+        $programSatisfaction = TrainingProgram::with('feedbacks')->get()->map(function($program) {
+            $avg = $program->feedbacks->avg('rating');
+            return [
+                'title' => $program->title,
+                'rating' => $avg ? round($avg, 2) : 0
+            ];
+        })->filter(fn($p) => $p['rating'] > 0)->sortByDesc('rating')->take(10)->values();
+
+        // 4. Trainee Engagement Rate
+        $totalAttended = \Illuminate\Support\Facades\DB::table('program_user')->where('is_present', true)->count();
+        $totalFeedbacks = \App\Models\Feedback::count();
+        $engagementData = [
+            'submitted' => $totalFeedbacks,
+            'no_feedback' => max(0, $totalAttended - $totalFeedbacks)
+        ];
+
+        return view('admin.programs.index', compact('programs', 'totalPrograms', 'totalTrainees', 'trainerPerformance', 'programSatisfaction', 'engagementData'));
     }
 
     public function create()

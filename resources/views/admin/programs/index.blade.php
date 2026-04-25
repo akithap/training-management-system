@@ -34,6 +34,33 @@
                 </div>
             </div>
 
+            <!-- Analytics Dashboards (Chart.js) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Chart 1: Trainer Leaderboard -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 heading-font">Trainer Leaderboard</h3>
+                    <div class="relative h-64 w-full">
+                        <canvas id="trainerChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 3: Program Satisfaction -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 heading-font">Program Satisfaction</h3>
+                    <div class="relative h-64 w-full">
+                        <canvas id="programChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 4: Trainee Engagement -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 heading-font">Trainee Engagement</h3>
+                    <div class="relative h-64 w-full">
+                        <canvas id="engagementChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
             <!-- Programs Table with Filter -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 border-b border-gray-200">
@@ -89,8 +116,65 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+
+            // 1. Trainer Performance (Bar)
+            const trainerData = @json($trainerPerformance);
+            if(trainerData && trainerData.length > 0) {
+                new Chart(document.getElementById('trainerChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: trainerData.map(t => t.name),
+                        datasets: [{
+                            label: 'Average Rating (out of 5)',
+                            data: trainerData.map(t => t.rating),
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 5 } } }
+                });
+            }
+
+            // 3. Program Satisfaction (Line)
+            const programData = @json($programSatisfaction);
+            if(programData && programData.length > 0) {
+                new Chart(document.getElementById('programChart'), {
+                    type: 'line',
+                    data: {
+                        labels: programData.map(p => (p.title.length > 15 ? p.title.substring(0,15) + '...' : p.title)),
+                        datasets: [{
+                            label: 'Satisfaction Score',
+                            data: programData.map(p => p.rating),
+                            borderColor: '#10b981',
+                            tension: 0.3,
+                            fill: true,
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)'
+                        }]
+                    },
+                    options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 5 } } }
+                });
+            }
+
+            // 4. Trainee Engagement (Doughnut)
+            const engagementData = @json($engagementData);
+            if(engagementData && (engagementData.submitted > 0 || engagementData.no_feedback > 0)) {
+                new Chart(document.getElementById('engagementChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Submitted Feedback', 'No Feedback (Attended)'],
+                        datasets: [{
+                            data: [engagementData.submitted, engagementData.no_feedback],
+                            backgroundColor: ['#f59e0b', '#e5e7eb'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: { maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'bottom' } } }
+                });
+            }
+
             const searchInput = document.getElementById('searchInput');
             const rows = document.querySelectorAll('.program-row');
             const noResultsRow = document.getElementById('noResultsRow');
