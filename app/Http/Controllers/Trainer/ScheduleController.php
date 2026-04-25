@@ -15,7 +15,7 @@ class ScheduleController extends Controller
     {
         $programs = Auth::user()->programsAsTrainer()->with(['trainees', 'feedbacks.user'])->get();
         
-        $upcomingCount = $programs->where('schedule_datetime', '>=', now())->count();
+        $upcomingCount = $programs->where('is_completed', false)->count();
         $totalFeedbacks = $programs->flatMap->feedbacks;
         $avgRating = $totalFeedbacks->avg('rating') ?: 0;
         
@@ -31,5 +31,14 @@ class ScheduleController extends Controller
 
         $status = $isPresent ? 'Present' : 'Absent';
         return back()->with('success', "Marked {$trainee->name} as {$status}.");
+    }
+
+    public function markCompleted(Request $request, TrainingProgram $program)
+    {
+        if ($program->trainer_id !== Auth::id()) abort(403);
+
+        $program->update(['is_completed' => true]);
+        
+        return back()->with('success', "Program '{$program->title}' has been permanently completed.");
     }
 }

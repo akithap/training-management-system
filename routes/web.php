@@ -26,6 +26,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::middleware(['auth', 'role:trainer'])->prefix('trainer')->name('trainer.')->group(function () {
     Route::get('schedules', [TrainerScheduleController::class, 'index'])->name('schedules.index');
     Route::post('schedules/{program}/attendance/{trainee}', [TrainerScheduleController::class, 'markAttendance'])->name('schedules.attendance');
+    Route::post('schedules/{program}/complete', [TrainerScheduleController::class, 'markCompleted'])->name('schedules.complete');
 });
 
 Route::middleware(['auth', 'role:trainee'])->prefix('trainee')->name('trainee.')->group(function () {

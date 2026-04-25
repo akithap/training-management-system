@@ -45,16 +45,25 @@
                 <div x-show="tab === 'upcoming'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="space-y-6">
                     @php $hasUpcoming = false; @endphp
                     @foreach ($programs as $program)
-                        @if($program->schedule_datetime >= now())
+                        @if(!$program->is_completed)
                             @php $hasUpcoming = true; @endphp
                             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-t-4 border-indigo-400">
-                                <div class="border-b pb-4 mb-4">
-                                    <h3 class="text-2xl font-bold text-gray-900">{{ $program->title }}</h3>
-                                    <p class="text-sm text-gray-500 mt-1">
-                                        <span class="font-semibold text-gray-700">Area:</span> {{ $program->training_area }} | 
-                                        <span class="font-semibold text-gray-700">Venue:</span> {{ $program->venue }} | 
-                                        <span class="font-semibold text-gray-700">Schedule:</span> {{ $program->schedule_datetime->format('M d, Y H:i A') }}
-                                    </p>
+                                <div class="border-b pb-4 mb-4 flex justify-between items-start">
+                                    <div>
+                                        <h3 class="text-2xl font-bold text-gray-900">{{ $program->title }}</h3>
+                                        <p class="text-sm text-gray-500 mt-1">
+                                            <span class="font-semibold text-gray-700">Area:</span> {{ $program->training_area }} | 
+                                            <span class="font-semibold text-gray-700">Venue:</span> {{ $program->venue }} | 
+                                            <span class="font-semibold text-gray-700">Schedule:</span> {{ $program->schedule_datetime->format('M d, Y H:i A') }}
+                                        </p>
+                                    </div>
+                                    <form method="POST" action="{{ route('trainer.schedules.complete', $program->id) }}" onsubmit="return confirm('Are you sure you want to mark this program as completed? You will no longer be able to modify attendance.');">
+                                        @csrf
+                                        @php $isFuture = $program->schedule_datetime > now(); @endphp
+                                        <button type="submit" {{ $isFuture ? 'disabled' : '' }} title="{{ $isFuture ? 'You cannot complete a class before it legitimately begins' : '' }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded text-sm transition {{ $isFuture ? 'opacity-50 cursor-not-allowed' : '' }}">
+                                            Mark as Completed
+                                        </button>
+                                    </form>
                                 </div>
 
                                 <div class="w-full">
@@ -110,7 +119,7 @@
                 <div x-show="tab === 'completed'" style="display: none;" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="space-y-6">
                     @php $hasCompleted = false; @endphp
                     @foreach ($programs as $program)
-                        @if($program->schedule_datetime < now())
+                        @if($program->is_completed)
                             @php $hasCompleted = true; @endphp
                             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-t-4 border-gray-400 opacity-90">
                                 <div class="border-b pb-4 mb-4 flex justify-between items-start">
