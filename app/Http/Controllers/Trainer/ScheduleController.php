@@ -51,7 +51,7 @@ class ScheduleController extends Controller
 
         $program->update([
             'is_completed' => true,
-            'trainer_review' => $validated['trainer_review']
+            'trainer_review' => $validated['trainer_review'] ?? null
         ]);
         
         return back()->with('success', "Program '{$program->title}' has been permanently completed.");
