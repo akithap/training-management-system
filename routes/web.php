@@ -46,11 +46,22 @@ require __DIR__.'/auth.php';
 
 // SHARED HOSTING DEPLOYMENT HELPER
 Route::get('/force-migrate', function () {
-    if (app()->environment('local') || true) { // Kept 'true' temporarily so it definitely works on production
+    if (app()->environment('local') || true) {
         \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
         return "Database successfully migrated for production hosting!";
     }
     return abort(404);
+});
+
+// SHARED HOSTING LOG VIEWER
+Route::get('/system-logs', function () {
+    $path = storage_path('logs/laravel.log');
+    if (!file_exists($path)) return "No logs generated yet.";
+    
+    // Read the last 5000 characters safely
+    $content = file_get_contents($path);
+    $tail = substr($content, -5000);
+    return response("<pre style='white-space: pre-wrap; font-size: 12px;'>" . htmlspecialchars($tail) . "</pre>");
 });
 
 Route::get('/downloads/programs/{filename}', function ($filename) {
