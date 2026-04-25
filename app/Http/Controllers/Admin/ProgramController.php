@@ -35,24 +35,22 @@ class ProgramController extends Controller
             ];
         })->filter(fn($p) => $p['rating'] > 0)->sortByDesc('rating')->take(10)->values();
 
-        // 4. 7-Day Attendance Rate (Engagement)
-        $recentPrograms = TrainingProgram::where('schedule_datetime', '>=', now()->subDays(7))
+        // 4. 7-Day Attendance Rate (Engagement per Workshop)
+        $sevenDaysAgo = now()->subDays(7);
+        $engagementData = TrainingProgram::with('trainees')
+            ->where('schedule_datetime', '>=', $sevenDaysAgo)
             ->where('schedule_datetime', '<=', now())
-            ->pluck('id');
-
-        $totalEnrolled = \Illuminate\Support\Facades\DB::table('program_user')
-            ->whereIn('training_program_id', $recentPrograms)
-            ->count();
-
-        $totalAttended = \Illuminate\Support\Facades\DB::table('program_user')
-            ->whereIn('training_program_id', $recentPrograms)
-            ->where('is_present', true)
-            ->count();
-
-        $engagementData = [
-            'present' => $totalAttended,
-            'absent' => max(0, $totalEnrolled - $totalAttended)
-        ];
+            ->get()
+            ->map(function($program) {
+                $enrolled = $program->trainees->count();
+                $present = $program->trainees->filter(fn($t) => $t->pivot->is_present)->count();
+                return [
+                    'title' => $program->title,
+                    'enrolled' => $enrolled,
+                    'present' => $present,
+                    'absent' => $enrolled - $present
+                ];
+            })->values();
 
         return view('admin.programs.index', compact('programs', 'totalPrograms', 'totalTrainees', 'trainerPerformance', 'programSatisfaction', 'engagementData'));
     }

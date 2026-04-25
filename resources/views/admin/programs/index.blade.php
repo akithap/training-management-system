@@ -158,20 +158,36 @@
                 });
             }
 
-            // 4. 7-Day Attendance Rate (Doughnut)
+            // 4. 7-Day Attendance Rate (Stacked Bar)
             const engagementData = @json($engagementData);
-            if(engagementData && (engagementData.present > 0 || engagementData.absent > 0)) {
+            if(engagementData && engagementData.length > 0) {
                 new Chart(document.getElementById('engagementChart'), {
-                    type: 'doughnut',
+                    type: 'bar',
                     data: {
-                        labels: ['Present (Attended)', 'Absent (No-Show)'],
-                        datasets: [{
-                            data: [engagementData.present, engagementData.absent],
-                            backgroundColor: ['#10b981', '#ef4444'],
-                            borderWidth: 0
-                        }]
+                        labels: engagementData.map(p => (p.title.length > 15 ? p.title.substring(0,15) + '...' : p.title)),
+                        datasets: [
+                            {
+                                label: 'Present (Attended)',
+                                data: engagementData.map(p => p.present),
+                                backgroundColor: '#10b981',
+                                stack: 'Stack 0',
+                            },
+                            {
+                                label: 'Absent (No-Show)',
+                                data: engagementData.map(p => p.absent),
+                                backgroundColor: '#ef4444',
+                                stack: 'Stack 0',
+                            }
+                        ]
                     },
-                    options: { maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'bottom' } } }
+                    options: { 
+                        maintainAspectRatio: false, 
+                        plugins: { legend: { position: 'bottom' } },
+                        scales: {
+                            x: { stacked: true },
+                            y: { stacked: true, beginAtZero: true, ticks: { stepSize: 1 } }
+                        }
+                    }
                 });
             }
 
