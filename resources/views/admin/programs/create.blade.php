@@ -33,11 +33,18 @@
                             <x-input-error :messages="$errors->get('venue')" class="mt-2" />
                         </div>
 
-                        <!-- Schedule -->
-                        <div class="mb-4">
-                            <x-input-label for="schedule_datetime" :value="__('Schedule Date & Time')" />
-                            <x-text-input id="schedule_datetime" class="block mt-1 w-full" type="datetime-local" name="schedule_datetime" :value="old('schedule_datetime')" required />
-                            <x-input-error :messages="$errors->get('schedule_datetime')" class="mt-2" />
+                        <!-- Schedule Dates -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <x-input-label for="schedule_datetime" :value="__('Start Date & Time')" />
+                                <input id="schedule_datetime" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="datetime-local" name="schedule_datetime" value="{{ old('schedule_datetime') }}" required />
+                                <x-input-error :messages="$errors->get('schedule_datetime')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="end_datetime" :value="__('End Date & Time (Optional)')" />
+                                <input id="end_datetime" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="datetime-local" name="end_datetime" value="{{ old('end_datetime') }}" />
+                                <x-input-error :messages="$errors->get('end_datetime')" class="mt-2" />
+                            </div>
                         </div>
 
                         <!-- Trainer -->
@@ -59,15 +66,22 @@
                             <x-input-error :messages="$errors->get('file_upload')" class="mt-2" />
                         </div>
 
-                        <!-- Trainees Enrollment -->
+                        <!-- Trainees Enrollment Checkboxes -->
                         <div class="mb-4">
-                            <x-input-label for="trainees" :value="__('Enroll Trainees')" />
-                            <select id="trainees" name="trainees[]" multiple class="block mt-1 w-full h-32 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                @foreach($trainees as $trainee)
-                                    <option value="{{ $trainee->id }}" {{ (is_array(old('trainees')) && in_array($trainee->id, old('trainees'))) ? 'selected' : '' }}>{{ $trainee->name }}</option>
-                                @endforeach
-                            </select>
-                            <p class="text-xs text-gray-500 mt-1">Hold CTRL (or CMD) to select multiple.</p>
+                            <x-input-label :value="__('Enroll Trainees')" class="mb-2" />
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-60 overflow-y-auto p-4 border border-gray-300 rounded-md bg-gray-50 shadow-inner">
+                                @forelse($trainees as $trainee)
+                                    <label class="inline-flex items-center p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-indigo-50 cursor-pointer transition">
+                                        <input type="checkbox" name="trainees[]" value="{{ $trainee->id }}" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" {{ (is_array(old('trainees')) && in_array($trainee->id, old('trainees'))) ? 'checked' : '' }}>
+                                        <div class="ml-3">
+                                            <span class="block text-sm font-medium text-gray-900">{{ $trainee->name }}</span>
+                                            <span class="block text-xs text-gray-500">{{ $trainee->email }}</span>
+                                        </div>
+                                    </label>
+                                @empty
+                                    <div class="col-span-full text-center text-sm text-gray-500 py-2">No active trainees available in the system.</div>
+                                @endforelse
+                            </div>
                             <x-input-error :messages="$errors->get('trainees')" class="mt-2" />
                         </div>
 

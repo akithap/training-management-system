@@ -69,6 +69,7 @@ class ProgramController extends Controller
             'training_area' => 'required|string|max:255',
             'venue' => 'required|string|max:255',
             'schedule_datetime' => 'required|date',
+            'end_datetime' => 'nullable|date|after_or_equal:schedule_datetime',
             'trainer_id' => 'required|exists:users,id',
             'file_upload' => 'nullable|file|mimes:pdf,doc,docx,zip|max:5120',
             'trainees' => 'nullable|array',
@@ -85,6 +86,7 @@ class ProgramController extends Controller
             'training_area' => $validated['training_area'],
             'venue' => $validated['venue'],
             'schedule_datetime' => $validated['schedule_datetime'],
+            'end_datetime' => $validated['end_datetime'],
             'trainer_id' => $validated['trainer_id'],
             'file_path' => $filePath,
         ]);
