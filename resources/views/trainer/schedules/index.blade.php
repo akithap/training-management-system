@@ -141,6 +141,13 @@
                                     </div>
                                 </div>
 
+                                @if($program->trainer_review)
+                                    <div class="mb-8 p-4 bg-indigo-50 border border-indigo-100 rounded-lg">
+                                        <h4 class="text-sm font-bold text-indigo-900 mb-2">Trainer's Final Review</h4>
+                                        <p class="text-sm text-indigo-800 whitespace-pre-wrap">{{ $program->trainer_review }}</p>
+                                    </div>
+                                @endif
+
                                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                     <!-- Roster -->
                                     <div>

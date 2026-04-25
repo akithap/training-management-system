@@ -16,9 +16,15 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    @if(auth()->user()->role === 'admin')
+                    @if(Auth::user()->role === 'admin')
+                        <x-nav-link :href="route('admin.programs.index')" :active="request()->routeIs('admin.programs.*')">
+                            {{ __('Programs Dashboard') }}
+                        </x-nav-link>
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
-                            {{ __('Manage Users') }}
+                            {{ __('Identity Management') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.reviews.index')" :active="request()->routeIs('admin.reviews.*')">
+                            {{ __('Feedback & Reviews') }}
                         </x-nav-link>
                     @endif
                 </div>
