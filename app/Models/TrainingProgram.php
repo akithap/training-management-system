@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TrainingProgram extends Model
 {
-    protected $fillable = ['title', 'training_area', 'venue', 'schedule_datetime', 'end_datetime', 'trainer_id', 'file_path', 'is_completed'];
+    protected $fillable = ['title', 'training_area', 'venue', 'schedule_datetime', 'end_datetime', 'trainer_id', 'file_path', 'is_completed', 'trainer_review'];
 
     protected $casts = [
         'schedule_datetime' => 'datetime',

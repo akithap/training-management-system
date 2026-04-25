@@ -45,7 +45,14 @@ class ScheduleController extends Controller
             return back()->with('error', 'You cannot mark a program as completed before its scheduled start time.');
         }
 
-        $program->update(['is_completed' => true]);
+        $validated = $request->validate([
+            'trainer_review' => 'nullable|string|max:2000'
+        ]);
+
+        $program->update([
+            'is_completed' => true,
+            'trainer_review' => $validated['trainer_review']
+        ]);
         
         return back()->with('success', "Program '{$program->title}' has been permanently completed.");
     }

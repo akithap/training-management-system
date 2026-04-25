@@ -57,10 +57,17 @@
                                             <span class="font-semibold text-gray-700">Schedule:</span> {{ $program->schedule_datetime->format('M d, Y H:i A') }}
                                         </p>
                                     </div>
-                                    <form method="POST" action="{{ route('trainer.schedules.complete', $program->id) }}" onsubmit="return confirm('Are you sure you want to mark this program as completed? You will no longer be able to modify attendance.');">
+                                    <form method="POST" action="{{ route('trainer.schedules.complete', $program->id) }}" onsubmit="return confirm('Are you sure you want to mark this program as completed? You will no longer be able to modify attendance.');" class="w-full sm:w-auto">
                                         @csrf
                                         @php $isFuture = $program->schedule_datetime > now(); @endphp
-                                        <button type="submit" {{ $isFuture ? 'disabled' : '' }} title="{{ $isFuture ? 'You cannot complete a class before it legitimately begins' : '' }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded text-sm transition {{ $isFuture ? 'opacity-50 cursor-not-allowed' : '' }}">
+                                        
+                                        @if(!$isFuture)
+                                            <div class="mb-3">
+                                                <textarea name="trainer_review" rows="2" class="w-full text-sm border-gray-300 focus:border-indigo-500 rounded-md shadow-sm resize-none" placeholder="Add final review or remarks..."></textarea>
+                                            </div>
+                                        @endif
+
+                                        <button type="submit" {{ $isFuture ? 'disabled' : '' }} title="{{ $isFuture ? 'You cannot complete a class before it legitimately begins' : '' }}" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded text-sm transition {{ $isFuture ? 'opacity-50 cursor-not-allowed' : '' }}">
                                             Mark as Completed
                                         </button>
                                     </form>
