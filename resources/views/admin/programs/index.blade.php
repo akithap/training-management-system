@@ -54,7 +54,7 @@
 
                 <!-- Chart 4: Trainee Engagement -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4 heading-font">Trainee Engagement</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 heading-font">7-Day Attendance Rate</h3>
                     <div class="relative h-64 w-full">
                         <canvas id="engagementChart"></canvas>
                     </div>
@@ -158,16 +158,16 @@
                 });
             }
 
-            // 4. Trainee Engagement (Doughnut)
+            // 4. 7-Day Attendance Rate (Doughnut)
             const engagementData = @json($engagementData);
-            if(engagementData && (engagementData.submitted > 0 || engagementData.no_feedback > 0)) {
+            if(engagementData && (engagementData.present > 0 || engagementData.absent > 0)) {
                 new Chart(document.getElementById('engagementChart'), {
                     type: 'doughnut',
                     data: {
-                        labels: ['Submitted Feedback', 'No Feedback (Attended)'],
+                        labels: ['Present (Attended)', 'Absent (No-Show)'],
                         datasets: [{
-                            data: [engagementData.submitted, engagementData.no_feedback],
-                            backgroundColor: ['#f59e0b', '#e5e7eb'],
+                            data: [engagementData.present, engagementData.absent],
+                            backgroundColor: ['#10b981', '#ef4444'],
                             borderWidth: 0
                         }]
                     },

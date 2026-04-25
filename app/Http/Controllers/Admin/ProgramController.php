@@ -35,12 +35,23 @@ class ProgramController extends Controller
             ];
         })->filter(fn($p) => $p['rating'] > 0)->sortByDesc('rating')->take(10)->values();
 
-        // 4. Trainee Engagement Rate
-        $totalAttended = \Illuminate\Support\Facades\DB::table('program_user')->where('is_present', true)->count();
-        $totalFeedbacks = \App\Models\Feedback::count();
+        // 4. 7-Day Attendance Rate (Engagement)
+        $recentPrograms = TrainingProgram::where('schedule_datetime', '>=', now()->subDays(7))
+            ->where('schedule_datetime', '<=', now())
+            ->pluck('id');
+
+        $totalEnrolled = \Illuminate\Support\Facades\DB::table('program_user')
+            ->whereIn('training_program_id', $recentPrograms)
+            ->count();
+
+        $totalAttended = \Illuminate\Support\Facades\DB::table('program_user')
+            ->whereIn('training_program_id', $recentPrograms)
+            ->where('is_present', true)
+            ->count();
+
         $engagementData = [
-            'submitted' => $totalFeedbacks,
-            'no_feedback' => max(0, $totalAttended - $totalFeedbacks)
+            'present' => $totalAttended,
+            'absent' => max(0, $totalEnrolled - $totalAttended)
         ];
 
         return view('admin.programs.index', compact('programs', 'totalPrograms', 'totalTrainees', 'trainerPerformance', 'programSatisfaction', 'engagementData'));
