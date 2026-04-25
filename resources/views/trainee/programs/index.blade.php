@@ -32,7 +32,7 @@
                 <div x-show="tab === 'upcoming'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="space-y-6">
                     @php $hasUpcoming = false; @endphp
                     @foreach ($programs as $program)
-                        @if($program->schedule_datetime >= now())
+                        @if(!$program->is_completed)
                             @php $hasUpcoming = true; @endphp
                             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-indigo-500">
                                 <div class="flex flex-col md:flex-row justify-between md:items-center">
@@ -67,7 +67,7 @@
                 <div x-show="tab === 'completed'" style="display: none;" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="space-y-6">
                     @php $hasCompleted = false; @endphp
                     @foreach ($programs as $program)
-                        @if($program->schedule_datetime < now())
+                        @if($program->is_completed)
                             @php 
                                 $hasCompleted = true; 
                                 $userFeedback = $program->feedbacks->first();

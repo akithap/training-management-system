@@ -25,6 +25,10 @@ class ScheduleController extends Controller
     public function markAttendance(Request $request, TrainingProgram $program, User $trainee)
     {
         if ($program->trainer_id !== Auth::id()) abort(403);
+        
+        if ($program->schedule_datetime > now()) {
+            return back()->with('error', 'Attendance locked until the scheduled start time.');
+        }
 
         $isPresent = $request->boolean('is_present');
         $program->trainees()->updateExistingPivot($trainee->id, ['is_present' => $isPresent]);
@@ -36,6 +40,10 @@ class ScheduleController extends Controller
     public function markCompleted(Request $request, TrainingProgram $program)
     {
         if ($program->trainer_id !== Auth::id()) abort(403);
+
+        if ($program->schedule_datetime > now()) {
+            return back()->with('error', 'You cannot mark a program as completed before its scheduled start time.');
+        }
 
         $program->update(['is_completed' => true]);
         
