@@ -12,19 +12,23 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-
                     @if(Auth::user()->role === 'admin')
                         <x-nav-link :href="route('admin.programs.index')" :active="request()->routeIs('admin.programs.*')">
-                            {{ __('Programs Dashboard') }}
+                            {{ __('Dashboard') }}
                         </x-nav-link>
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                             {{ __('Identity Management') }}
                         </x-nav-link>
                         <x-nav-link :href="route('admin.reviews.index')" :active="request()->routeIs('admin.reviews.*')">
                             {{ __('Feedback & Reviews') }}
+                        </x-nav-link>
+                    @elseif(Auth::user()->role === 'trainer')
+                        <x-nav-link :href="route('trainer.schedules.index')" :active="request()->routeIs('trainer.schedules.*')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @elseif(Auth::user()->role === 'trainee')
+                        <x-nav-link :href="route('trainee.programs.index')" :active="request()->routeIs('trainee.programs.*')">
+                            {{ __('Dashboard') }}
                         </x-nav-link>
                     @endif
                 </div>
@@ -79,13 +83,23 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-
-            @if(auth()->user()->role === 'admin')
+            @if(Auth::user()->role === 'admin')
+                <x-responsive-nav-link :href="route('admin.programs.index')" :active="request()->routeIs('admin.programs.*')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
-                    {{ __('Manage Users') }}
+                    {{ __('Identity Management') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.reviews.index')" :active="request()->routeIs('admin.reviews.*')">
+                    {{ __('Feedback & Reviews') }}
+                </x-responsive-nav-link>
+            @elseif(Auth::user()->role === 'trainer')
+                <x-responsive-nav-link :href="route('trainer.schedules.index')" :active="request()->requestIs('trainer.schedules.*')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+            @elseif(Auth::user()->role === 'trainee')
+                <x-responsive-nav-link :href="route('trainee.programs.index')" :active="request()->requestIs('trainee.programs.*')">
+                    {{ __('Dashboard') }}
                 </x-responsive-nav-link>
             @endif
         </div>
