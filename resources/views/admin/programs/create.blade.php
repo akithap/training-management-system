@@ -12,6 +12,8 @@
                     <form method="POST" action="{{ route('admin.programs.store') }}" enctype="multipart/form-data">
                         @csrf
                         
+                        <!-- Flatpickr CSS -->
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
                         <!-- Title -->
                         <div class="mb-4">
                             <x-input-label for="title" :value="__('Title')" />
@@ -37,12 +39,12 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
                                 <x-input-label for="schedule_datetime" :value="__('Start Date & Time')" />
-                                <input id="schedule_datetime" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="datetime-local" name="schedule_datetime" value="{{ old('schedule_datetime') }}" required />
+                                <input id="schedule_datetime" class="flatpickr block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="text" name="schedule_datetime" value="{{ old('schedule_datetime') }}" placeholder="Select Start Date/Time..." required />
                                 <x-input-error :messages="$errors->get('schedule_datetime')" class="mt-2" />
                             </div>
                             <div>
                                 <x-input-label for="end_datetime" :value="__('End Date & Time (Optional)')" />
-                                <input id="end_datetime" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="datetime-local" name="end_datetime" value="{{ old('end_datetime') }}" />
+                                <input id="end_datetime" class="flatpickr block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="text" name="end_datetime" value="{{ old('end_datetime') }}" placeholder="Select End Date/Time..." />
                                 <x-input-error :messages="$errors->get('end_datetime')" class="mt-2" />
                             </div>
                         </div>
@@ -97,4 +99,17 @@
             </div>
         </div>
     </div>
+
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr(".flatpickr", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                altInput: true,
+                altFormat: "F j, Y h:i K"
+            });
+        });
+    </script>
 </x-app-layout>
