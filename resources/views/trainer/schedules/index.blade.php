@@ -82,6 +82,7 @@
                                                         <form method="POST" action="{{ route('trainer.schedules.attendance', ['program' => $program->id, 'trainee' => $trainee->id]) }}">
                                                             @csrf
                                                             @php $isFuture = $program->schedule_datetime > now(); @endphp
+                                                            <input type="hidden" name="is_present" value="{{ $trainee->pivot->is_present ? '0' : '1' }}">
                                                             <button type="submit" {{ $isFuture ? 'disabled' : '' }} title="{{ $isFuture ? 'Attendance locked until program starts' : '' }}" class="text-xs px-3 py-1.5 focus:outline-none bg-white border {{ $isFuture ? 'border-gray-300 text-gray-400 bg-gray-50 cursor-not-allowed' : ($trainee->pivot->is_present ? 'border-red-300 text-red-700 hover:bg-red-50' : 'border-indigo-300 text-indigo-700 hover:bg-indigo-50') }} rounded shadow-sm transition">
                                                                 {{ $trainee->pivot->is_present ? 'Mark Absent' : 'Mark Present' }}
                                                             </button>
